@@ -1,7 +1,10 @@
+// ContactForm.js
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { addContact, updateContact } from '../Services/Actions/ContactListAction';
 import { Form, Button, Col, Row, Image } from 'react-bootstrap';
 
-function ContactForm ({ contact, onSave, onCancel }) {
+function ContactForm({ contact, onSave, onCancel }) {
     const [formData, setFormData] = useState({
         id: '',
         avatar: '',
@@ -11,6 +14,8 @@ function ContactForm ({ contact, onSave, onCancel }) {
         address: '',
         notes: ''
     });
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (contact) {
@@ -32,7 +37,6 @@ function ContactForm ({ contact, onSave, onCancel }) {
         const { name, value } = e.target;
 
         if (name === 'phone') {
-            // Remove non-numeric characters and restrict to 10 digits
             const numericValue = value.replace(/\D/g, '').slice(0, 10);
             setFormData({
                 ...formData,
@@ -49,10 +53,17 @@ function ContactForm ({ contact, onSave, onCancel }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validate phone number length
         if (formData.phone.length !== 10) {
             alert('Phone number must be exactly 10 digits.');
             return;
+        }
+
+        if (formData.id) {
+            dispatch(updateContact(formData));
+        } else {
+            console.log("kdfjdf");
+            
+            dispatch(addContact(formData));
         }
 
         onSave(formData);
@@ -120,13 +131,13 @@ function ContactForm ({ contact, onSave, onCancel }) {
                         <Form.Label column sm={3}>Phone Number:</Form.Label>
                         <Col sm={9}>
                             <Form.Control
-                                type="text"  // Using text to handle numeric input more flexibly
+                                type="text"
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
                                 placeholder="Enter phone number"
-                                pattern="\d{10}"  // Restrict to 10 digits
-                                inputMode="numeric"  // Suggests a numeric keyboard for mobile devices
+                                pattern="\d{10}"
+                                inputMode="numeric"
                                 required
                             />
                         </Col>
