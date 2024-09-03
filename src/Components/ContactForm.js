@@ -1,10 +1,11 @@
 // ContactForm.js
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
 import { addContact, updateContact } from '../Services/Actions/ContactListAction';
 import { Form, Button, Col, Row, Image } from 'react-bootstrap';
 
-function ContactForm({ contact, onSave, onCancel }) {
+function ContactForm() {
     const [formData, setFormData] = useState({
         id: '',
         avatar: '',
@@ -16,22 +17,16 @@ function ContactForm({ contact, onSave, onCancel }) {
     });
 
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const contacts = useSelector(state => state.contactReducer.contacts);
+    
     useEffect(() => {
-        if (contact) {
-            setFormData(contact);
-        } else {
-            setFormData({
-                id: '',
-                avatar: '',
-                name: '',
-                email: '',
-                phone: '',
-                address: '',
-                notes: ''
-            });
+        if (id) {
+            const contact = contacts.find(c => c.id === id);
+            setFormData(contact || {});
         }
-    }, [contact]);
+    }, [id, contacts]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -61,25 +56,14 @@ function ContactForm({ contact, onSave, onCancel }) {
         if (formData.id) {
             dispatch(updateContact(formData));
         } else {
-            console.log("kdfjdf");
-            
-            dispatch(addContact(formData));
+            dispatch(addContact({ ...formData, id: Date.now().toString() }));
         }
 
-        onSave(formData);
-        setFormData({
-            id: '',
-            avatar: '',
-            name: '',
-            email: '',
-            phone: '',
-            address: '',
-            notes: ''
-        });
+        navigate('/view');
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="contact-form">
             <Row className="mb-3">
                 <Col xs={12} md={3} className="text-center">
                     <Image
@@ -176,8 +160,11 @@ function ContactForm({ contact, onSave, onCancel }) {
                             <Button variant="primary" type="submit">
                                 Save Contact
                             </Button>
-                            <Button variant="secondary" onClick={onCancel} className="ml-2">
+                            <Button variant="secondary" onClick={() => navigate('/')} className="ml-2">
                                 Cancel
+                            </Button>
+                            <Button variant="primary" onClick={() => navigate('/view')}>
+                                View Contact
                             </Button>
                         </Col>
                     </Form.Group>

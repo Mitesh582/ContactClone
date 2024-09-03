@@ -1,67 +1,30 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Alert } from 'react-bootstrap';
+// App.js
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import ContactForm from './Components/ContactForm';
 import ContactList from './Components/ContactList';
+import { fetchContacts } from './Services/Actions/ContactListAction';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [alert, setAlert] = useState('');
+    const dispatch = useDispatch();
 
-  // Function to set alert with timeout
-  const showAlert = (message) => {
-    setAlert(message);
-    setTimeout(() => {
-      setAlert('');
-    }, 2000); // Hide the alert after 2 seconds
-  };
+    useEffect(() => {
+        dispatch(fetchContacts()); // App start fetch contacts
+    }, [dispatch]);
 
-  const handleSaveContact = (contact) => {
-    if (contact.id) {
-      setContacts(contacts.map(c => (c.id === contact.id ? contact : c)));
-      showAlert('Contact updated successfully!');
-    } else {
-      contact.id = Date.now().toString();
-      setContacts([...contacts, contact]);
-      showAlert('Contact added successfully!');
-    }
-    setSelectedContact(null);
-  };
-
-  const handleEditContact = (contact) => {
-    setSelectedContact(contact);
-  };
-
-  const handleDeleteContact = (id) => {
-    setContacts(contacts.filter(contact => contact.id !== id));
-    showAlert('Contact deleted successfully!');
-  };
-
-  const handleCancelEdit = () => {
-    setSelectedContact(null);
-  };
-
-  return (
-    <Container className="mt-5">
-      {alert && <Alert variant="success">{alert}</Alert>}
-      <Row>
-        <Col md={4}>
-          <ContactForm
-            contact={selectedContact}
-            onSave={handleSaveContact}
-            onCancel={handleCancelEdit}
-          />
-        </Col>
-        <Col md={8}>
-          <ContactList
-            contacts={contacts}
-            onEdit={handleEditContact}
-            onDelete={handleDeleteContact}
-          />
-        </Col>
-      </Row>
-    </Container>
-  );
+    return (
+        <Router>
+            <Container className="mt-5">
+                <Routes>
+                    <Route path="/" element={<ContactForm />} />
+                    <Route path="/view" element={<ContactList />} />
+                    <Route path="/edit/:id" element={<ContactForm />} />
+                </Routes>
+            </Container>
+        </Router>
+    );
 }
 
 export default App;
