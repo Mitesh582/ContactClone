@@ -1,80 +1,74 @@
 /* styles.css */
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+.main-layout {
     display: flex;
+    flex-direction: column;
     height: 100vh;
 }
 
-.container {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-.sidebar {
-    width: 250px;
-    background-color: #f0f0f0;
-    padding: 15px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    margin: 10px 0;
-}
-
-.sidebar ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
-.main-content {
-    flex-grow: 1;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-input[type="text"] {
-    width: 300px;
+.list-button {
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 50%;
     padding: 8px;
 }
 
-button.create-contact {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.list-button:hover {
+    background-color: #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.contact-list {
-    margin-top: 20px;
+.bg-header {
+    background-color: #f7fafc;
 }
 
-.contact-item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
+.bg-serach {
+    background-color: #f0f3f4;
 }
 
-.contact-item:hover {
-    background-color: #f9f9f9;
+.color-icon-header {
+    color: #5f6367;
 }
 
-.contact-details {
-    margin-top: 20px;
+.btn-bg {
+    background-color: #c1e7fe;
+}
+
+.btn-create-bg {
+    background-color: #c1e7fe;
+    height: 40px;
+    width: 90%;
+}
+
+/* .layout-body {
+    display: flex;
+    flex: 1;
+} */
+
+.sidebar-col {
+    background-color: #f7fafc;
+    height: 650px;
+    /* width: 330px; */
+    overflow-y: auto;
+}
+
+.main-content {
+    /* background-color: #f7fafc; */
+    padding: 15px;
+    overflow-y: auto;
+    height: 650px;
+    max-width: 100%;
 }

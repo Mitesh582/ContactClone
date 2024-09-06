@@ -1,14 +1,13 @@
-// ContactList.js
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'
 import { deleteContact } from '../Services/Actions/ContactListAction';
-import { Card, Button, Row, Col } from 'react-bootstrap';
+import { Card, Button, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 
 function ContactList() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
     const contacts = useSelector(state => state.contactReducer.contacts);
 
     const handleDelete = id => {
@@ -17,11 +16,23 @@ function ContactList() {
         }
     };
 
+    const filteredContacts = contacts.filter(contact =>
+        contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <>
             <Button variant="primary" onClick={() => navigate('/')}>Back</Button>
+            <InputGroup className="mb-3 mt-3">
+                <FormControl
+                    placeholder="Search contacts"
+                    aria-label="Search contacts"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </InputGroup>
             <Row className="g-4">
-                {contacts.map(contact => (
+                {filteredContacts.map(contact => (
                     <Col key={contact.id} md={4} sm={6}>
                         <Card className="contact-card">
                             <Card.Img
@@ -33,11 +44,12 @@ function ContactList() {
                             <Card.Body>
                                 <Card.Title><strong>Name:</strong> {contact.name}</Card.Title>
                                 <Card.Subtitle className="mb-1">
-                                    <strong>Email:</strong> {contact.email}</Card.Subtitle>
+                                    <strong>Email:</strong> {contact.email}
+                                </Card.Subtitle>
                                 <Card.Text>
                                     <strong>Phone:</strong> {contact.phone}<br />
                                     <strong>Address:</strong> {contact.address}<br />
-                                    <strong>Note:</strong> {contact.notes}
+                                    <strong>Notes:</strong> {contact.notes}
                                 </Card.Text>
                                 <Link to={`/edit/${contact.id}`}>
                                     <Button variant="info" className="me-2">Edit</Button>
@@ -50,6 +62,6 @@ function ContactList() {
             </Row>
         </>
     );
-};
+}
 
 export default ContactList;
